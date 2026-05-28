@@ -27,44 +27,6 @@ npm run build
 npm run test
 ```
 
-## Deploy en Vercel
-
-### Opción 1: Deploy desde GitHub
-
-1. Sube el repositorio a GitHub
-2. Ve a [vercel.com](https://vercel.com)
-3. Importa el repositorio
-4. Vercel detectará automáticamente la configuración de Vite
-5. Haz clic en "Deploy"
-
-### Opción 2: Deploy con Vercel CLI
-
-```bash
-# Instalar Vercel CLI
-npm i -g vercel
-
-# Login
-vercel login
-
-# Deploy
-vercel
-
-# Deploy a producción
-vercel --prod
-```
-
-### Opción 3: Deploy con vercel.json
-
-Crea un archivo `vercel.json` en la raíz:
-
-```json
-{
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "framework": "vite"
-}
-```
-
 ## Estructura del Proyecto
 
 ```
@@ -76,8 +38,8 @@ src/
 │   └── quotation/    # MaterialTable, TotalsBox, RoomCard
 ├── hooks/            # useCalculator, useQuotation, usePDF
 ├── store/            # Zustand store con persistencia
-├── types/            # TypeScript interfaces
 ├── templates/        # ApartmentV1, ApartmentV2, BathroomV3
+├── types/            # TypeScript interfaces
 └── styles/           # Animaciones CSS
 ```
 
@@ -93,6 +55,12 @@ src/
 - ✅ Responsive mobile-first
 - ✅ Dark theme profesional
 - ✅ 22 tests pasando
+
+## Deploy en Vercel
+
+1. Importa el repositorio en [vercel.com](https://vercel.com)
+2. Vercel detectará automáticamente la configuración de Vite
+3. Haz clic en "Deploy"
 
 ## Licencia
 

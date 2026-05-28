@@ -1,6 +1,3 @@
-# Local Pi runtime state
-.atl/
-
 # Dependencies
 node_modules/
 
@@ -31,3 +28,19 @@ Thumbs.db
 
 # Test coverage
 coverage/
+
+# Pi runtime
+.pi/
+.pi-lens/
+.atl/
+
+# Legacy files (HTML originales)
+legacy/
+
+# Images (keep in public/images only)
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.webp
+!public/images/*
