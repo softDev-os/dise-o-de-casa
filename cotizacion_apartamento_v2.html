@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cotización Apartamento v2 — Por Ambiente</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0c0f0e;--card:#141918;--card2:#101413;
+    --accent:#6ec8a9;--accent2:#8ee8c8;--light:#e0f0eb;--muted:#607a72;
+    --green:#6eb88a;--blue:#7a9ec8;--gold:#c8b46e;--red:#d9735a;
+    --purple:#a07ec8;--orange:#c8956e;--border:#1e2a25;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--light);font-family:'DM Sans',sans-serif;min-height:100vh;}
+
+  header{background:linear-gradient(135deg,#101a16,#0c0f0e);border-bottom:1px solid var(--border);padding:24px 24px 18px;position:relative;overflow:hidden;}
+  header::before{content:'';position:absolute;top:-80px;right:-60px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(110,200,169,0.08) 0%,transparent 70%);}
+  .header-tag{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:5px;font-weight:600;}
+  h1{font-family:'Bebas Neue',sans-serif;font-size:42px;line-height:1;}
+  h1 span{color:var(--accent);}
+  .pills{display:flex;gap:7px;margin-top:12px;flex-wrap:wrap;}
+  .pill{border-radius:20px;padding:3px 11px;font-size:10px;font-weight:500;}
+  .p-teal{background:rgba(110,200,169,0.1);border:1px solid rgba(110,200,169,0.2);color:var(--accent);}
+  .p-gold{background:rgba(200,180,110,0.1);border:1px solid rgba(200,180,110,0.2);color:var(--gold);}
+  .p-blue{background:rgba(122,158,200,0.1);border:1px solid rgba(122,158,200,0.2);color:var(--blue);}
+  .p-red{background:rgba(217,115,90,0.1);border:1px solid rgba(217,115,90,0.2);color:var(--red);}
+  .p-purple{background:rgba(160,126,200,0.1);border:1px solid rgba(160,126,200,0.2);color:var(--purple);}
+
+  /* PRECIOS GLOBALES */
+  .precio-panel{background:var(--card2);border-bottom:1px solid var(--border);padding:0;}
+  .precio-toggle{display:flex;align-items:center;gap:10px;padding:12px 18px;cursor:pointer;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-weight:600;user-select:none;transition:color 0.2s;}
+  .precio-toggle:hover{color:var(--accent);}
+  .precio-toggle span{margin-left:auto;font-size:14px;}
+  .precio-body{display:none;padding:16px 18px 20px;border-top:1px solid var(--border);}
+  .precio-body.open{display:block;}
+  .inputs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:9px;}
+  .inp-grp label{display:block;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;font-weight:600;}
+  .inp-grp input{width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:7px;padding:8px 11px;color:var(--light);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;outline:none;transition:border-color 0.2s;}
+  .inp-grp input:focus{border-color:var(--accent);}
+  .inp-hint{font-size:9px;color:var(--muted);margin-top:2px;}
+  .calc-btn{margin-top:14px;width:100%;background:var(--accent);color:#0c0f0e;border:none;border-radius:7px;padding:11px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;cursor:pointer;transition:background 0.2s,transform 0.1s;}
+  .calc-btn:hover{background:var(--accent2);transform:translateY(-1px);}
+
+  /* TABS */
+  .tabs-wrap{border-bottom:1px solid var(--border);background:var(--card2);overflow-x:auto;}
+  .tabs{display:flex;min-width:max-content;}
+  .tab{padding:12px 16px;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all 0.2s;user-select:none;}
+  .tab:hover{color:var(--light);}
+  .tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+  main{padding:20px 16px 60px;max-width:980px;margin:0 auto;}
+  .tab-content{display:none;}
+  .tab-content.active{display:block;}
+
+  .sec-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+  .sec-title::after{content:'';flex:1;height:1px;background:var(--border);}
+
+  /* ROOM HEADER */
+  .room-header{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-bottom:18px;}
+  .room-emoji-big{font-size:38px;flex-shrink:0;}
+  .room-info{flex:1;}
+  .room-name{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;line-height:1;}
+  .room-dims-big{font-size:13px;color:var(--muted);margin-top:4px;}
+  .room-m2{font-family:'Bebas Neue',sans-serif;font-size:38px;color:var(--accent2);line-height:1;text-align:right;}
+  .room-m2 span{font-size:14px;font-family:'DM Sans',sans-serif;color:var(--muted);}
+
+  /* MINI SVG */
+  .room-svg-wrap{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:18px;display:flex;gap:18px;align-items:center;flex-wrap:wrap;}
+  svg.room-plan{flex-shrink:0;filter:drop-shadow(0 0 10px rgba(110,200,169,0.08));}
+  .room-legend{display:flex;flex-direction:column;gap:7px;flex:1;min-width:160px;}
+  .leg-item{display:flex;align-items:center;gap:8px;font-size:11px;}
+  .leg-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
+  .leg-lbl{color:var(--muted);}
+  .leg-val{color:var(--light);font-weight:600;margin-left:auto;}
+  .leg-div{height:1px;background:var(--border);margin:3px 0;}
+
+  /* METRICS */
+  .metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:9px;margin-bottom:18px;}
+  .metric{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px 12px;position:relative;overflow:hidden;}
+  .metric::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:10px 10px 0 0;}
+  .m-teal::before{background:var(--accent);}
+  .m-gold::before{background:var(--gold);}
+  .m-green::before{background:var(--green);}
+  .m-blue::before{background:var(--blue);}
+  .m-red::before{background:var(--red);}
+  .m-purple::before{background:var(--purple);}
+  .metric-icon{font-size:16px;margin-bottom:5px;}
+  .metric-lbl{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:2px;}
+  .metric-val{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--light);line-height:1;}
+  .metric-val span{font-size:11px;color:var(--muted);}
+  .metric-sub{font-size:9px;color:var(--muted);margin-top:2px;}
+
+  /* TABLE */
+  .mat-table{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:18px;}
+  .tbl-head{display:grid;grid-template-columns:2.2fr 0.8fr 1fr 1fr;padding:9px 14px;background:rgba(110,200,169,0.05);border-bottom:1px solid var(--border);font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:600;}
+  .tbl-row{display:grid;grid-template-columns:2.2fr 0.8fr 1fr 1fr;padding:11px 14px;border-bottom:1px solid var(--border);align-items:center;transition:background 0.15s;}
+  .tbl-row:hover{background:rgba(255,255,255,0.02);}
+  .tbl-row:last-child{border-bottom:none;}
+  .tbl-sep{padding:5px 14px;background:rgba(255,255,255,0.015);border-bottom:1px solid var(--border);font-size:8px;letter-spacing:2px;text-transform:uppercase;font-weight:700;}
+  .item-name{font-size:12px;font-weight:500;color:var(--light);}
+  .item-detail{font-size:9px;color:var(--muted);margin-top:1px;}
+  .badge{display:inline-block;font-size:7px;letter-spacing:1px;text-transform:uppercase;padding:2px 5px;border-radius:6px;margin-bottom:2px;font-weight:700;}
+  .b-piso{background:rgba(110,200,169,0.12);color:var(--accent);}
+  .b-pin{background:rgba(200,180,110,0.12);color:var(--gold);}
+  .b-rev{background:rgba(217,115,90,0.12);color:var(--red);}
+  .b-pvc{background:rgba(110,184,138,0.12);color:var(--green);}
+  .b-ele{background:rgba(122,158,200,0.12);color:var(--blue);}
+  .b-car{background:rgba(160,126,200,0.12);color:var(--purple);}
+  .b-res{background:rgba(200,149,110,0.12);color:var(--orange);}
+  .b-zoc{background:rgba(200,180,110,0.08);color:var(--gold);}
+  .b-imp{background:rgba(122,158,200,0.08);color:var(--blue);}
+  .b-sal{background:rgba(217,115,90,0.08);color:var(--red);}
+  .qty{font-size:11px;color:var(--light);}
+  .unit-p{font-size:11px;color:var(--muted);}
+  .total-cell{font-size:12px;font-weight:600;color:var(--accent2);text-align:right;}
+
+  /* SUBTOTAL BOX */
+  .sub-box{background:linear-gradient(135deg,#141e1a,#0f1512);border:1px solid rgba(110,200,169,0.2);border-radius:14px;padding:18px;margin-bottom:18px;position:relative;overflow:hidden;}
+  .sub-box::after{content:'';position:absolute;bottom:-40px;right:-30px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(110,200,169,0.06) 0%,transparent 70%);}
+  .sub-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px;}
+  .sub-row:last-of-type{border-bottom:none;}
+  .sub-lbl{color:var(--muted);}
+  .sub-val{color:var(--light);font-weight:600;}
+  .sub-final{display:flex;justify-content:space-between;align-items:flex-end;margin-top:14px;padding-top:14px;border-top:1px solid rgba(110,200,169,0.2);}
+  .sub-final-lbl{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:3px;color:var(--accent);}
+  .sub-big{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--accent2);line-height:1;}
+  .sub-big span{font-size:16px;}
+
+  /* PROGRESS */
+  .prog-wrap{margin-bottom:18px;}
+  .prog-item{margin-bottom:8px;}
+  .prog-top{display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px;}
+  .prog-lbl{color:var(--muted);}
+  .prog-val{color:var(--light);font-weight:600;}
+  .prog-bg{height:4px;background:var(--border);border-radius:4px;overflow:hidden;}
+  .prog-bar{height:100%;border-radius:4px;transition:width 0.6s ease;}
+
+  /* RESUMEN FINAL */
+  .rf-table{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:18px;}
+  .rf-head{padding:12px 16px;background:rgba(110,200,169,0.05);border-bottom:1px solid var(--border);}
+  .rf-head h3{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--accent);}
+  .rf-row{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid var(--border);}
+  .rf-row:last-child{border-bottom:none;}
+  .rf-lbl{font-size:11px;color:var(--muted);}
+  .rf-val{font-size:12px;font-weight:600;color:var(--light);}
+  .rf-sub{font-size:10px;color:var(--accent);font-family:'Bebas Neue',sans-serif;letter-spacing:1px;}
+  .rf-total-row{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:rgba(110,200,169,0.05);}
+  .rf-total-lbl{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent);}
+  .rf-total-val{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--accent2);}
+
+  /* NOTAS */
+  .notas{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:8px;margin-bottom:18px;}
+  .nota{background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:10px;padding:11px 13px;display:flex;gap:8px;}
+  .nota-icon{font-size:14px;flex-shrink:0;margin-top:1px;}
+  .nota-txt{font-size:10px;color:var(--muted);line-height:1.5;}
+  .nota-txt strong{color:var(--light);display:block;margin-bottom:2px;font-size:11px;}
+
+  /* PLANO GENERAL SVG */
+  .plano-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;margin-bottom:18px;}
+
+  footer{text-align:center;padding:16px;border-top:1px solid var(--border);font-size:10px;color:var(--muted);letter-spacing:1px;}
+
+  @media(max-width:500px){
+    h1{font-size:32px;} main{padding:14px 10px 50px;}
+    .tbl-head,.tbl-row{grid-template-columns:1.6fr 0.6fr 0.8fr 0.9fr;padding:8px 10px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-tag">Presupuesto Detallado · Bogotá 2026</div>
+  <h1>APARTAMENTO <span>POR AMBIENTE</span></h1>
+  <div class="pills">
+    <span class="pill p-teal">📐 8.06 × 6.28 m</span>
+    <span class="pill p-gold">🛏 3 Habitaciones</span>
+    <span class="pill p-blue">🛁 Baño + Lavadero</span>
+    <span class="pill p-red">🍳 Cocina + Sala</span>
+    <span class="pill p-purple">📏 Alto: 2.22 m</span>
+  </div>
+</header>
+
+<!-- PANEL DE PRECIOS GLOBAL -->
+<div class="precio-panel">
+  <div class="precio-toggle" onclick="togglePrecios(this)">
+    ⚙️ &nbsp;CONFIGURAR PRECIOS (COP) — clic para expandir
+    <span>▼</span>
+  </div>
+  <div class="precio-body" id="precioBody">
+    <div class="inputs-grid">
+      <div class="inp-grp"><label>Piso material (m²)</label><input type="number" id="g_piso_mat" value="35000"><div class="inp-hint">Porcelanato / baldosa</div></div>
+      <div class="inp-grp"><label>M.O. piso (m²)</label><input type="number" id="g_piso_mo" value="20000"><div class="inp-hint">Nivelación+pegante+fragua</div></div>
+      <div class="inp-grp"><label>Pintura paredes (m²)</label><input type="number" id="g_pin_par" value="15000"><div class="inp-hint">Material + M.O. 2 manos</div></div>
+      <div class="inp-grp"><label>Pintura cielorraso (m²)</label><input type="number" id="g_pin_c" value="12000"><div class="inp-hint">Material + M.O.</div></div>
+      <div class="inp-grp"><label>Resane y empaste (m²)</label><input type="number" id="g_resane" value="8000"><div class="inp-hint">Preparación previa pintura</div></div>
+      <div class="inp-grp"><label>Zócalos/rodapiés (m lin.)</label><input type="number" id="g_zocalo" value="15000"><div class="inp-hint">Material + instalación</div></div>
+      <div class="inp-grp"><label>Electricidad (punto)</label><input type="number" id="g_elec" value="45000"><div class="inp-hint">Toma / interruptor / punto luz</div></div>
+      <div class="inp-grp"><label>Carpintería puerta (und)</label><input type="number" id="g_puerta" value="380000"><div class="inp-hint">HDF + marco + bisagras + M.O.</div></div>
+      <div class="inp-grp"><label>Revestimiento mat. (m²)</label><input type="number" id="g_rev_mat" value="50000"><div class="inp-hint">Cerámica zona húmeda</div></div>
+      <div class="inp-grp"><label>M.O. revestimiento (m²)</label><input type="number" id="g_rev_mo" value="25000"><div class="inp-hint">Enchape piso + paredes</div></div>
+      <div class="inp-grp"><label>Techo PVC húmedo (m²)</label><input type="number" id="g_pvc" value="28000"><div class="inp-hint">Lámina + perfilería + M.O.</div></div>
+      <div class="inp-grp"><label>Impermeabilización (m²)</label><input type="number" id="g_imp" value="25000"><div class="inp-hint">Baño / lavadero antes enchape</div></div>
+      <div class="inp-grp"><label>Salpicadero cocina (m²)</label><input type="number" id="g_sal" value="55000"><div class="inp-hint">Enchape zona trabajo cocina</div></div>
+      <div class="inp-grp"><label>Imprevistos (%)</label><input type="number" id="g_imp_pct" value="8"><div class="inp-hint">% sobre total obra</div></div>
+    </div>
+    <button class="calc-btn" onclick="calcularTodo()">⚡ RECALCULAR TODO EL APARTAMENTO</button>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs" id="tabsContainer">
+    <div class="tab active" onclick="showTab('general',this)">🏠 Plano</div>
+    <div class="tab" onclick="showTab('P',this)">🛏 Hab. P</div>
+    <div class="tab" onclick="showTab('R',this)">🛏 Hab. R</div>
+    <div class="tab" onclick="showTab('A',this)">🛏 Hab. A</div>
+    <div class="tab" onclick="showTab('SALA',this)">🛋 Sala</div>
+    <div class="tab" onclick="showTab('BANO',this)">🛁 Baño</div>
+    <div class="tab" onclick="showTab('LAV',this)">🫧 Lavadero</div>
+    <div class="tab" onclick="showTab('COCINA',this)">🍳 Cocina</div>
+    <div class="tab" onclick="showTab('PASILLO',this)">🚪 Pasillo</div>
+    <div class="tab" onclick="showTab('total',this)">📊 Total</div>
+  </div>
+</div>
+
+<main>
+
+<!-- ===== PLANO GENERAL ===== -->
+<div id="tab-general" class="tab-content active">
+<br>
+<div class="sec-title">PLANO GENERAL DEL APARTAMENTO</div>
+<div class="plano-wrap">
+  <svg width="290" height="215" viewBox="0 0 290 215" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;filter:drop-shadow(0 0 14px rgba(110,200,169,0.1))">
+    <defs>
+      <pattern id="g" width="12" height="12" patternUnits="userSpaceOnUse">
+        <path d="M12 0L0 0 0 12" fill="none" stroke="#1a2820" stroke-width="0.4"/>
+      </pattern>
+    </defs>
+    <rect width="290" height="215" fill="url(#g)" rx="8"/>
+    <!-- Hab P -->
+    <rect x="8" y="8" width="64" height="67" fill="rgba(110,200,169,0.08)" stroke="var(--accent)" stroke-width="1.5" rx="2"/>
+    <text x="40" y="30" fill="var(--accent)" font-size="8" font-family="Bebas Neue" text-anchor="middle" letter-spacing="1">HAB. P</text>
+    <text x="40" y="41" fill="rgba(110,200,169,0.5)" font-size="7" font-family="DM Sans" text-anchor="middle">2.56×2.66</text>
+    <text x="40" y="52" fill="rgba(110,200,169,0.35)" font-size="7" font-family="DM Sans" text-anchor="middle">6.81 m²</text>
+    <rect x="70" y="22" width="2" height="13" fill="var(--blue)" rx="1"/>
+    <!-- Baño -->
+    <rect x="76" y="8" width="45" height="45" fill="rgba(122,158,200,0.08)" stroke="var(--blue)" stroke-width="1.5" rx="2"/>
+    <text x="98" y="27" fill="var(--blue)" font-size="8" font-family="Bebas Neue" text-anchor="middle" letter-spacing="1">BAÑO</text>
+    <text x="98" y="38" fill="rgba(122,158,200,0.5)" font-size="6.5" font-family="DM Sans" text-anchor="middle">1.80×1.81</text>
+    <text x="98" y="48" fill="rgba(122,158,200,0.35)" font-size="7" font-family="DM Sans" text-anchor="middle">3.26 m²</text>
+    <!-- Lavadero -->
+    <rect x="124" y="8" width="20" height="45" fill="rgba(160,126,200,0.08)" stroke="var(--purple)" stroke-width="1.5" rx="2"/>
+    <text x="134" y="28" fill="var(--purple)" font-size="6" font-family="Bebas Neue" text-anchor="middle">LAV</text>
+    <text x="134" y="38" fill="rgba(160,126,200,0.4)" font-size="6" font-family="DM Sans" text-anchor="middle">0.80</text>
+    <text x="134" y="47" fill="rgba(160,126,200,0.35)" font-size="6" font-family="DM Sans" text-anchor="middle">1.44m²</text>
+    <!-- Cocina -->
+    <rect x="148" y="8" width="66" height="50" fill="rgba(200,180,110,0.08)" stroke="var(--gold)" stroke-width="1.5" rx="2"/>
+    <text x="181" y="27" fill="var(--gold)" font-size="8" font-family="Bebas Neue" text-anchor="middle" letter-spacing="1">COCINA</text>
+    <text x="181" y="38" fill="rgba(200,180,110,0.5)" font-size="6.5" font-family="DM Sans" text-anchor="middle">2.66×2.00</text>
+    <text x="181" y="49" fill="rgba(200,180,110,0.35)" font-size="7" font-family="DM Sans" text-anchor="middle">5.32 m²</text>
+    <rect x="212" y="18" width="2" height="13" fill="var(--gold)" rx="1"/>
+    <rect x="188" y="56" width="2" height="8" fill="var(--red)" rx="1"/>
+    <text x="194" y="63" fill="var(--red)" font-size="5.5" font-family="DM Sans">↑ entrada</text>
+    <!-- Pasillo -->
+    <rect x="76" y="57" width="137" height="19" fill="rgba(110,200,169,0.03)" stroke="rgba(110,200,169,0.25)" stroke-width="1" stroke-dasharray="4,3" rx="2"/>
+    <text x="144" y="70" fill="rgba(110,200,169,0.45)" font-size="7" font-family="Bebas Neue" text-anchor="middle">PASILLO 2.51 × 0.78 m</text>
+    <!-- Hab R -->
+    <rect x="8" y="79" width="66" height="88" fill="rgba(110,184,138,0.07)" stroke="var(--green)" stroke-width="1.5" rx="2"/>
+    <text x="41" y="107" fill="var(--green)" font-size="8" font-family="Bebas Neue" text-anchor="middle" letter-spacing="1">HAB. R</text>
+    <text x="41" y="118" fill="rgba(110,184,138,0.5)" font-size="6.5" font-family="DM Sans" text-anchor="middle">2.66×3.50</text>
+    <text x="41" y="129" fill="rgba(110,184,138,0.35)" font-size="7" font-family="DM Sans" text-anchor="middle">9.31 m²</text>
+    <rect x="8" y="100" width="2" height="13" fill="var(--green)" rx="1"/>
+    <!-- Hab A -->
+    <rect x="78" y="79" width="64" height="88" fill="rgba(217,115,90,0.06)" stroke="var(--red)" stroke-width="1.5" rx="2"/>
+    <text x="110" y="107" fill="var(--red)" font-size="8" font-family="Bebas Neue" text-anchor="middle" letter-spacing="1">HAB. A</text>
+    <text x="110" y="118" fill="rgba(217,115,90,0.5)" font-size="6.5" font-family="DM Sans" text-anchor="middle">2.51×3.50</text>
+    <text x="110" y="129" fill="rgba(217,115,90,0.35)" font-size="7" font-family="DM Sans" text-anchor="middle">8.79 m²</text>
+    <rect x="100" y="165" width="13" height="2" fill="var(--red)" rx="1"/>
+    <!-- Sala -->
+    <rect x="148" y="79" width="66" height="88" fill="rgba(160,126,200,0.07)" stroke="var(--purple)" stroke-width="1.5" rx="2"/>
+    <text x="181" y="107" fill="var(--purple)" font-size="8" font-family="Bebas Neue" text-anchor="middle" letter-spacing="1">SALA</text>
+    <text x="181" y="118" fill="rgba(160,126,200,0.5)" font-size="6.5" font-family="DM Sans" text-anchor="middle">2.67×3.54</text>
+    <text x="181" y="129" fill="rgba(160,126,200,0.35)" font-size="7" font-family="DM Sans" text-anchor="middle">9.45 m²</text>
+    <rect x="148" y="104" width="2" height="17" fill="var(--purple)" rx="1"/>
+    <!-- Cotas -->
+    <line x1="8" y1="177" x2="214" y2="177" stroke="var(--accent)" stroke-width="0.8"/>
+    <line x1="8" y1="174" x2="8" y2="180" stroke="var(--accent)" stroke-width="0.8"/>
+    <line x1="214" y1="174" x2="214" y2="180" stroke="var(--accent)" stroke-width="0.8"/>
+    <text x="111" y="190" fill="var(--accent)" font-size="8.5" font-family="DM Sans" font-weight="600" text-anchor="middle">8.06 m</text>
+    <line x1="225" y1="8" x2="225" y2="167" stroke="var(--gold)" stroke-width="0.8"/>
+    <line x1="222" y1="8" x2="228" y2="8" stroke="var(--gold)" stroke-width="0.8"/>
+    <line x1="222" y1="167" x2="228" y2="167" stroke="var(--gold)" stroke-width="0.8"/>
+    <text x="253" y="93" fill="var(--gold)" font-size="8.5" font-family="DM Sans" font-weight="600" text-anchor="middle">6.28 m</text>
+    <text x="111" y="206" fill="var(--muted)" font-size="7" font-family="DM Sans" text-anchor="middle">Alto: 2.22 m · Área total: ~50.6 m²</text>
+  </svg>
+  <div style="flex:1;min-width:180px;">
+    <div style="display:flex;flex-direction:column;gap:7px;">
+      <div class="leg-item"><div class="leg-dot" style="background:var(--accent)"></div><span class="leg-lbl">Hab. P</span><span class="leg-val">6.81 m²</span></div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--green)"></div><span class="leg-lbl">Hab. R</span><span class="leg-val">9.31 m²</span></div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--red)"></div><span class="leg-lbl">Hab. A</span><span class="leg-val">8.79 m²</span></div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--purple)"></div><span class="leg-lbl">Sala</span><span class="leg-val">9.45 m²</span></div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--blue)"></div><span class="leg-lbl">Baño</span><span class="leg-val">3.26 m²</span></div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--purple);opacity:0.5"></div><span class="leg-lbl">Lavadero</span><span class="leg-val">1.44 m²</span></div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--gold)"></div><span class="leg-lbl">Cocina</span><span class="leg-val">5.32 m²</span></div>
+      <div class="leg-item"><div class="leg-dot" style="background:rgba(110,200,169,0.3);border:1px dashed var(--accent)"></div><span class="leg-lbl">Pasillo</span><span class="leg-val">1.96 m²</span></div>
+      <div class="leg-div"></div>
+      <div class="leg-item"><span class="leg-lbl" style="font-weight:600;color:var(--light)">Total obra civil</span><span class="leg-val" style="color:var(--accent2);font-size:14px" id="total_general_header">—</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="sec-title">CATEGORÍAS INCLUIDAS</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px;margin-bottom:18px;">
+  <div class="nota"><div class="nota-icon">🪨</div><div class="nota-txt"><strong>Piso</strong>Material + M.O. por m², con 10% desperdicio</div></div>
+  <div class="nota"><div class="nota-icon">🎨</div><div class="nota-txt"><strong>Pintura</strong>Resane + empaste + 2 manos paredes + cielorraso</div></div>
+  <div class="nota"><div class="nota-icon">🪟</div><div class="nota-txt"><strong>Zócalos</strong>Rodapié en m lineal por perímetro del ambiente</div></div>
+  <div class="nota"><div class="nota-icon">🔌</div><div class="nota-txt"><strong>Electricidad</strong>Puntos eléctricos (luz + tomas) por ambiente</div></div>
+  <div class="nota"><div class="nota-icon">🚪</div><div class="nota-txt"><strong>Carpintería</strong>Puerta HDF + marco + bisagras + cerradura + M.O.</div></div>
+  <div class="nota"><div class="nota-icon">🛁</div><div class="nota-txt"><strong>Revestimiento</strong>Baño y lavadero: cerámica piso + paredes + PVC</div></div>
+  <div class="nota"><div class="nota-icon">💧</div><div class="nota-txt"><strong>Impermeabilización</strong>Baño y lavadero antes del enchape</div></div>
+  <div class="nota"><div class="nota-icon">🍳</div><div class="nota-txt"><strong>Salpicadero</strong>Enchape 60cm zona de trabajo cocina</div></div>
+</div>
+
+<div class="notas">
+  <div class="nota"><div class="nota-icon">⚠️</div><div class="nota-txt"><strong>No incluido</strong>Sanitarios, griferías, muebles, gabinetes cocina, closets, instalación hidráulica.</div></div>
+  <div class="nota"><div class="nota-icon">⚡</div><div class="nota-txt"><strong>Eléctrico básico</strong>Puntos en pared. Tablero eléctrico, cableado principal y acometida van aparte.</div></div>
+</div>
+</div>
+
+<!-- TABS DE AMBIENTES — generadas por JS -->
+<div id="tab-P"      class="tab-content"></div>
+<div id="tab-R"      class="tab-content"></div>
+<div id="tab-A"      class="tab-content"></div>
+<div id="tab-SALA"   class="tab-content"></div>
+<div id="tab-BANO"   class="tab-content"></div>
+<div id="tab-LAV"    class="tab-content"></div>
+<div id="tab-COCINA" class="tab-content"></div>
+<div id="tab-PASILLO"class="tab-content"></div>
+
+<!-- RESUMEN TOTAL -->
+<div id="tab-total" class="tab-content">
+<br>
+<div class="sec-title">DISTRIBUCIÓN DEL PRESUPUESTO</div>
+<div class="prog-wrap" id="prog_total"></div>
+<div class="sec-title">DESGLOSE FINAL POR AMBIENTE</div>
+<div class="rf-table">
+  <div class="rf-head"><h3>COTIZACIÓN COMPLETA — BOGOTÁ 2026</h3></div>
+  <div id="rf_rows"></div>
+  <div class="rf-total-row">
+    <div>
+      <div class="rf-total-lbl">TOTAL APARTAMENTO</div>
+      <div style="font-size:9px;color:var(--muted);margin-top:2px">Obra civil completa · Sin sanitarios ni muebles</div>
+    </div>
+    <div class="rf-total-val" id="rf_gran_total">—</div>
+  </div>
+</div>
+<div class="notas">
+  <div class="nota"><div class="nota-icon">🚽</div><div class="nota-txt"><strong>Sanitarios baño</strong>Ver cotizacion_bano_v3.html para inodoro, ducha, lavamanos, espejo.</div></div>
+  <div class="nota"><div class="nota-icon">🍳</div><div class="nota-txt"><strong>Muebles cocina</strong>Gabinetes, encimera, mesón, campana extractora van aparte.</div></div>
+  <div class="nota"><div class="nota-icon">🚿</div><div class="nota-txt"><strong>Plomería</strong>Tubería de agua y desagüe no incluida — presupuesto adicional.</div></div>
+  <div class="nota"><div class="nota-icon">📦</div><div class="nota-txt"><strong>Imprevistos</strong>Se recomienda 8–10%. En reforma siempre aparecen sorpresas.</div></div>
+</div>
+</div>
+
+</main>
+<footer>Presupuesto por ambiente · Apartamento 8.06×6.28 m · Bogotá, Colombia · 2026</footer>
+
+<script>
+// ══════════════════════════════════════
+//  DATOS DE AMBIENTES
+// ══════════════════════════════════════
+const ROOMS = {
+  P: {
+    emoji:'🛏', nombre:'Habitación P', color:'var(--accent)', colorName:'teal',
+    ancho:2.56, prof:2.66, alto:2.22,
+    piso:6.81, paredes:19.63, cielorraso:6.81,
+    perimetro:10.44, humedo:false,
+    rev_piso:0, rev_par:0, techo_pvc:0, impermeabilizar:false,
+    salpicadero:false, salpicadero_m2:0,
+    puntos_elec:3, puertas:1,
+    nota_elec:'1 lámpara + 2 tomas', nota_puerta:'Puerta 70cm — acceso habitación',
+    nota_zocalo:'Perímetro completo 10.44m'
+  },
+  R: {
+    emoji:'🛏', nombre:'Habitación R', color:'var(--green)', colorName:'green',
+    ancho:2.66, prof:3.50, alto:2.22,
+    piso:9.31, paredes:23.80, cielorraso:9.31,
+    perimetro:12.32, humedo:false,
+    rev_piso:0, rev_par:0, techo_pvc:0, impermeabilizar:false,
+    salpicadero:false, salpicadero_m2:0,
+    puntos_elec:3, puertas:1,
+    nota_elec:'1 lámpara + 2 tomas', nota_puerta:'Puerta 70cm — acceso habitación',
+    nota_zocalo:'Perímetro completo 12.32m'
+  },
+  A: {
+    emoji:'🛏', nombre:'Habitación A', color:'var(--red)', colorName:'red',
+    ancho:2.51, prof:3.50, alto:2.22,
+    piso:8.79, paredes:23.13, cielorraso:8.79,
+    perimetro:12.02, humedo:false,
+    rev_piso:0, rev_par:0, techo_pvc:0, impermeabilizar:false,
+    salpicadero:false, salpicadero_m2:0,
+    puntos_elec:3, puertas:1,
+    nota_elec:'1 lámpara + 2 tomas', nota_puerta:'Puerta 70cm — acceso habitación',
+    nota_zocalo:'Perímetro completo 12.02m'
+  },
+  SALA: {
+    emoji:'🛋', nombre:'Sala', color:'var(--purple)', colorName:'purple',
+    ancho:2.67, prof:3.54, alto:2.22,
+    piso:9.45, paredes:22.02, cielorraso:9.45,
+    perimetro:12.42, humedo:false,
+    rev_piso:0, rev_par:0, techo_pvc:0, impermeabilizar:false,
+    salpicadero:false, salpicadero_m2:0,
+    puntos_elec:4, puertas:1,
+    nota_elec:'1 lámpara + 3 tomas', nota_puerta:'Puerta 70cm — acceso sala',
+    nota_zocalo:'Perímetro 12.42m (descuenta ventana 1.80m)'
+  },
+  BANO: {
+    emoji:'🛁', nombre:'Baño', color:'var(--blue)', colorName:'blue',
+    ancho:1.80, prof:1.81, alto:2.22,
+    piso:0, paredes:0, cielorraso:3.26,
+    perimetro:7.22, humedo:true,
+    rev_piso:3.26, rev_par:14.48, techo_pvc:3.26, impermeabilizar:true, imp_m2:5.43,
+    salpicadero:false, salpicadero_m2:0,
+    puntos_elec:2, puertas:1,
+    nota_elec:'1 lámpara + 1 toma (secador)', nota_puerta:'Puerta 70cm — baño',
+    nota_zocalo:'No aplica — revestimiento completo'
+  },
+  LAV: {
+    emoji:'🫧', nombre:'Lavadero', color:'var(--purple)', colorName:'purple',
+    ancho:0.80, prof:1.80, alto:2.22,
+    piso:0, paredes:0, cielorraso:1.44,
+    perimetro:5.20, humedo:true,
+    rev_piso:1.44, rev_par:10.00, techo_pvc:1.44, impermeabilizar:true, imp_m2:2.88,
+    salpicadero:false, salpicadero_m2:0,
+    puntos_elec:2, puertas:1,
+    nota_elec:'1 lámpara + 1 toma (lavadora)', nota_puerta:'Puerta 70cm — lavadero',
+    nota_zocalo:'No aplica — revestimiento completo'
+  },
+  COCINA: {
+    emoji:'🍳', nombre:'Cocina', color:'var(--gold)', colorName:'gold',
+    ancho:2.66, prof:2.00, alto:2.22,
+    piso:5.32, paredes:17.14, cielorraso:5.32,
+    perimetro:9.32, humedo:false,
+    rev_piso:0, rev_par:0, techo_pvc:0, impermeabilizar:false,
+    salpicadero:true, salpicadero_m2:1.60,
+    puntos_elec:5, puertas:1,
+    nota_elec:'1 lámpara + 4 tomas (nevera, microondas, cafetera, licuadora)', nota_puerta:'Puerta 70cm — cocina',
+    nota_zocalo:'Perímetro 9.32m'
+  },
+  PASILLO: {
+    emoji:'🚪', nombre:'Pasillo Central', color:'var(--muted)', colorName:'green',
+    ancho:2.51, prof:0.78, alto:2.22,
+    piso:1.96, paredes:9.96, cielorraso:1.96,
+    perimetro:6.58, humedo:false,
+    rev_piso:0, rev_par:0, techo_pvc:0, impermeabilizar:false,
+    salpicadero:false, salpicadero_m2:0,
+    puntos_elec:1, puertas:0,
+    nota_elec:'1 lámpara central', nota_puerta:'Sin puertas propias',
+    nota_zocalo:'Perímetro 6.58m (descuenta aberturas)'
+  }
+};
+
+// ══════════════════════════════════════
+//  GENERA MINI-SVG POR HABITACIÓN
+// ══════════════════════════════════════
+function miniSVG(r, color) {
+  const W = 150, H = 120, margin = 14;
+  const scaleX = (W - margin*2) / r.ancho;
+  const scaleY = (H - margin*2 - 20) / r.prof;
+  const scale  = Math.min(scaleX, scaleY);
+  const rw = r.ancho * scale, rh = r.prof * scale;
+  const ox = margin + ((W - margin*2) - rw)/2;
+  const oy = margin;
+  return `<svg width="${W}" height="${H+10}" viewBox="0 0 ${W} ${H+10}" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
+    <rect width="${W}" height="${H+10}" fill="url(#g)" rx="6"/>
+    <rect x="${ox}" y="${oy}" width="${rw}" height="${rh}" fill="${color}18" stroke="${color}" stroke-width="1.5" rx="2"/>
+    <!-- cota ancho -->
+    <line x1="${ox}" y1="${oy+rh+6}" x2="${ox+rw}" y2="${oy+rh+6}" stroke="${color}" stroke-width="0.8"/>
+    <line x1="${ox}" y1="${oy+rh+3}" x2="${ox}" y2="${oy+rh+9}" stroke="${color}" stroke-width="0.8"/>
+    <line x1="${ox+rw}" y1="${oy+rh+3}" x2="${ox+rw}" y2="${oy+rh+9}" stroke="${color}" stroke-width="0.8"/>
+    <text x="${ox+rw/2}" y="${oy+rh+18}" fill="${color}" font-size="8" font-family="DM Sans" font-weight="600" text-anchor="middle">${r.ancho} m</text>
+    <!-- cota prof -->
+    <line x1="${ox+rw+6}" y1="${oy}" x2="${ox+rw+6}" y2="${oy+rh}" stroke="var(--gold)" stroke-width="0.8"/>
+    <line x1="${ox+rw+3}" y1="${oy}" x2="${ox+rw+9}" y2="${oy}" stroke="var(--gold)" stroke-width="0.8"/>
+    <line x1="${ox+rw+3}" y1="${oy+rh}" x2="${ox+rw+9}" y2="${oy+rh}" stroke="var(--gold)" stroke-width="0.8"/>
+    <text x="${ox+rw+22}" y="${oy+rh/2+3}" fill="var(--gold)" font-size="8" font-family="DM Sans" font-weight="600" text-anchor="middle">${r.prof} m</text>
+    <!-- area label -->
+    <text x="${ox+rw/2}" y="${oy+rh/2+4}" fill="${color}88" font-size="9" font-family="DM Sans" font-weight="600" text-anchor="middle">${(r.ancho*r.prof).toFixed(2)} m²</text>
+  </svg>`;
+}
+
+// ══════════════════════════════════════
+//  GENERA CONTENIDO DE CADA TAB
+// ══════════════════════════════════════
+function renderRoomTab(id, r) {
+  const color = r.color;
+  const piso_m2 = r.humedo ? r.rev_piso : r.piso;
+  const html = `
+<br>
+<div class="room-header">
+  <div class="room-emoji-big">${r.emoji}</div>
+  <div class="room-info">
+    <div class="room-name" style="color:${color}">${r.nombre.toUpperCase()}</div>
+    <div class="room-dims-big">${r.ancho}m × ${r.prof}m × ${r.alto}m de alto</div>
+  </div>
+  <div>
+    <div class="room-m2" style="color:${color}" id="${id}_total_header">—</div>
+    <div style="font-size:10px;color:var(--muted);text-align:right">subtotal ambiente</div>
+  </div>
+</div>
+
+<div class="room-svg-wrap">
+  ${miniSVG(r, color)}
+  <div class="room-legend">
+    <div class="leg-item"><div class="leg-dot" style="background:${color}"></div><span class="leg-lbl">Piso (neto)</span><span class="leg-val">${piso_m2.toFixed(2)} m²</span></div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--gold)"></div><span class="leg-lbl">Paredes</span><span class="leg-val">${(r.humedo ? r.rev_par : r.paredes).toFixed(2)} m²</span></div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--green)"></div><span class="leg-lbl">Cielorraso</span><span class="leg-val">${r.cielorraso.toFixed(2)} m²</span></div>
+    <div class="leg-div"></div>
+    <div class="leg-item"><span class="leg-lbl">Perímetro</span><span class="leg-val">${r.perimetro.toFixed(2)} m</span></div>
+    <div class="leg-item"><span class="leg-lbl">Puntos eléctricos</span><span class="leg-val">${r.puntos_elec} pts</span></div>
+    <div class="leg-item"><span class="leg-lbl">Puertas</span><span class="leg-val">${r.puertas} und</span></div>
+  </div>
+</div>
+
+<div class="sec-title">MATERIALES Y MANO DE OBRA</div>
+<div class="mat-table">
+  <div class="tbl-head"><div>ÍTEM</div><div>CANTIDAD</div><div>PRECIO UNIT.</div><div style="text-align:right">TOTAL</div></div>
+  ${buildRoomRows(id, r)}
+</div>
+
+<div class="sec-title">SUBTOTAL ${r.nombre.toUpperCase()}</div>
+<div class="sub-box" id="${id}_subbox">
+  ${buildSubRows(id, r)}
+  <div class="sub-final">
+    <div>
+      <div class="sub-final-lbl">TOTAL ${r.nombre.toUpperCase()}</div>
+      <div style="font-size:9px;color:var(--muted);margin-top:2px">Obra civil + instalaciones</div>
+    </div>
+    <div class="sub-big" id="${id}_gran_sub"><span>$</span>—</div>
+  </div>
+</div>`;
+  document.getElementById('tab-' + id).innerHTML = html;
+}
+
+function buildRoomRows(id, r) {
+  let html = '';
+  // PISO
+  if (!r.humedo) {
+    html += `<div class="tbl-sep" style="color:var(--accent)">🪨 Piso</div>
+    <div class="tbl-row">
+      <div><div class="badge b-piso">MATERIAL</div><div class="item-name">Piso (porcelanato/baldosa)</div><div class="item-detail">${r.piso.toFixed(2)} m² neto + 10% desp. = ${(r.piso*1.10).toFixed(2)} m²</div></div>
+      <div class="qty">${(r.piso*1.10).toFixed(2)} m²</div>
+      <div class="unit-p" id="${id}_u_piso_mat">$35.000</div>
+      <div class="total-cell" id="${id}_t_piso_mat">—</div>
+    </div>
+    <div class="tbl-row">
+      <div><div class="badge b-piso">M.OBRA</div><div class="item-name">Instalación piso</div><div class="item-detail">Nivelación + pegante + fragua</div></div>
+      <div class="qty">${(r.piso*1.10).toFixed(2)} m²</div>
+      <div class="unit-p" id="${id}_u_piso_mo">$20.000</div>
+      <div class="total-cell" id="${id}_t_piso_mo">—</div>
+    </div>`;
+  } else {
+    // REVESTIMIENTO
+    html += `<div class="tbl-sep" style="color:var(--red)">🪨 Revestimiento Piso</div>
+    <div class="tbl-row">
+      <div><div class="badge b-rev">MATERIAL</div><div class="item-name">Cerámica piso zona húmeda</div><div class="item-detail">${r.rev_piso.toFixed(2)} m² + 10% = ${(r.rev_piso*1.10).toFixed(2)} m²</div></div>
+      <div class="qty">${(r.rev_piso*1.10).toFixed(2)} m²</div>
+      <div class="unit-p" id="${id}_u_rev_mat">$50.000</div>
+      <div class="total-cell" id="${id}_t_rev_mat">—</div>
+    </div>
+    <div class="tbl-row">
+      <div><div class="badge b-rev">M.OBRA</div><div class="item-name">Instalación cerámica piso</div><div class="item-detail">Pegante + fragua + nivelación</div></div>
+      <div class="qty">${(r.rev_piso*1.10).toFixed(2)} m²</div>
+      <div class="unit-p" id="${id}_u_rev_mo">$25.000</div>
+      <div class="total-cell" id="${id}_t_rev_mo">—</div>
+    </div>
+    <div class="tbl-sep" style="color:var(--blue)">💧 Impermeabilización</div>
+    <div class="tbl-row">
+      <div><div class="badge b-imp">IMPERMEAB.</div><div class="item-name">Impermeabilización</div><div class="item-detail">Piso + arranque paredes ~${r.imp_m2.toFixed(2)} m²</div></div>
+      <div class="qty">${r.imp_m2.toFixed(2)} m²</div>
+      <div class="unit-p" id="${id}_u_imp">$25.000</div>
+      <div class="total-cell" id="${id}_t_imp">—</div>
+    </div>
+    <div class="tbl-sep" style="color:var(--red)">🧱 Revestimiento Paredes</div>
+    <div class="tbl-row">
+      <div><div class="badge b-rev">MATERIAL</div><div class="item-name">Cerámica paredes</div><div class="item-detail">${r.rev_par.toFixed(2)} m² + 10% = ${(r.rev_par*1.10).toFixed(2)} m²</div></div>
+      <div class="qty">${(r.rev_par*1.10).toFixed(2)} m²</div>
+      <div class="unit-p" id="${id}_u_rpar_mat">$50.000</div>
+      <div class="total-cell" id="${id}_t_rpar_mat">—</div>
+    </div>
+    <div class="tbl-row">
+      <div><div class="badge b-rev">M.OBRA</div><div class="item-name">Instalación cerámica paredes</div><div class="item-detail">Enchape vertical completo</div></div>
+      <div class="qty">${(r.rev_par*1.10).toFixed(2)} m²</div>
+      <div class="unit-p" id="${id}_u_rpar_mo">$25.000</div>
+      <div class="total-cell" id="${id}_t_rpar_mo">—</div>
+    </div>
+    <div class="tbl-sep" style="color:var(--green)">🏠 Techo PVC</div>
+    <div class="tbl-row">
+      <div><div class="badge b-pvc">PVC</div><div class="item-name">Techo PVC (lámina + perfilería + M.O.)</div><div class="item-detail">${r.cielorraso.toFixed(2)} m²</div></div>
+      <div class="qty">${r.cielorraso.toFixed(2)} m²</div>
+      <div class="unit-p" id="${id}_u_pvc">$28.000</div>
+      <div class="total-cell" id="${id}_t_pvc">—</div>
+    </div>`;
+  }
+
+  // PINTURA (no húmedo)
+  if (!r.humedo) {
+    html += `<div class="tbl-sep" style="color:var(--gold)">🎨 Preparación + Pintura</div>
+    <div class="tbl-row">
+      <div><div class="badge b-res">RESANE</div><div class="item-name">Resane y empaste paredes</div><div class="item-detail">Preparación superficial antes de pintar · ${r.paredes.toFixed(2)} m²</div></div>
+      <div class="qty">${r.paredes.toFixed(2)} m²</div>
+      <div class="unit-p" id="${id}_u_resane">$8.000</div>
+      <div class="total-cell" id="${id}_t_resane">—</div>
+    </div>
+    <div class="tbl-row">
+      <div><div class="badge b-pin">PINTURA</div><div class="item-name">Pintura paredes (2 manos)</div><div class="item-detail">Material + M.O. · ${r.paredes.toFixed(2)} m²</div></div>
+      <div class="qty">${r.paredes.toFixed(2)} m²</div>
+      <div class="unit-p" id="${id}_u_pin_par">$15.000</div>
+      <div class="total-cell" id="${id}_t_pin_par">—</div>
+    </div>
+    <div class="tbl-row">
+      <div><div class="badge b-pin">CIELORRASO</div><div class="item-name">Pintura cielorraso (2 manos)</div><div class="item-detail">Material + M.O. · ${r.cielorraso.toFixed(2)} m²</div></div>
+      <div class="qty">${r.cielorraso.toFixed(2)} m²</div>
+      <div class="unit-p" id="${id}_u_pin_c">$12.000</div>
+      <div class="total-cell" id="${id}_t_pin_c">—</div>
+    </div>`;
+  }
+
+  // ZÓCALOS
+  if (!r.humedo) {
+    html += `<div class="tbl-sep" style="color:var(--gold)">📏 Zócalos</div>
+    <div class="tbl-row">
+      <div><div class="badge b-zoc">RODAPIÉ</div><div class="item-name">Zócalo/rodapié</div><div class="item-detail">${r.nota_zocalo}</div></div>
+      <div class="qty">${r.perimetro.toFixed(2)} m</div>
+      <div class="unit-p" id="${id}_u_zoc">$15.000</div>
+      <div class="total-cell" id="${id}_t_zoc">—</div>
+    </div>`;
+  }
+
+  // SALPICADERO COCINA
+  if (r.salpicadero) {
+    html += `<div class="tbl-sep" style="color:var(--red)">🍳 Salpicadero</div>
+    <div class="tbl-row">
+      <div><div class="badge b-sal">ENCHAPE</div><div class="item-name">Salpicadero zona de trabajo</div><div class="item-detail">Enchape 60cm alto en muro trabajo · ${r.salpicadero_m2.toFixed(2)} m²</div></div>
+      <div class="qty">${r.salpicadero_m2.toFixed(2)} m²</div>
+      <div class="unit-p" id="${id}_u_sal">$55.000</div>
+      <div class="total-cell" id="${id}_t_sal">—</div>
+    </div>`;
+  }
+
+  // ELECTRICIDAD
+  html += `<div class="tbl-sep" style="color:var(--blue)">🔌 Electricidad</div>
+  <div class="tbl-row">
+    <div><div class="badge b-ele">ELÉCT.</div><div class="item-name">Puntos eléctricos</div><div class="item-detail">${r.nota_elec}</div></div>
+    <div class="qty">${r.puntos_elec} pts</div>
+    <div class="unit-p" id="${id}_u_elec">$45.000</div>
+    <div class="total-cell" id="${id}_t_elec">—</div>
+  </div>`;
+
+  // CARPINTERÍA
+  if (r.puertas > 0) {
+    html += `<div class="tbl-sep" style="color:var(--purple)">🚪 Carpintería</div>
+    <div class="tbl-row">
+      <div><div class="badge b-car">PUERTA</div><div class="item-name">Puerta HDF 70cm + marco + bisagras + cerradura</div><div class="item-detail">${r.nota_puerta}</div></div>
+      <div class="qty">${r.puertas} und</div>
+      <div class="unit-p" id="${id}_u_puerta">$380.000</div>
+      <div class="total-cell" id="${id}_t_puerta">—</div>
+    </div>`;
+  }
+
+  return html;
+}
+
+function buildSubRows(id, r) {
+  let html = '';
+  if (!r.humedo) {
+    html += `<div class="sub-row"><span class="sub-lbl">🪨 Piso (material + M.O.)</span><span class="sub-val" id="${id}_s_piso">—</span></div>`;
+    html += `<div class="sub-row"><span class="sub-lbl">🎨 Preparación + Pintura paredes + cielorraso</span><span class="sub-val" id="${id}_s_pin">—</span></div>`;
+    html += `<div class="sub-row"><span class="sub-lbl">📏 Zócalos/rodapiés</span><span class="sub-val" id="${id}_s_zoc">—</span></div>`;
+  } else {
+    html += `<div class="sub-row"><span class="sub-lbl">🪨 Revestimiento piso</span><span class="sub-val" id="${id}_s_piso">—</span></div>`;
+    html += `<div class="sub-row"><span class="sub-lbl">💧 Impermeabilización</span><span class="sub-val" id="${id}_s_imp">—</span></div>`;
+    html += `<div class="sub-row"><span class="sub-lbl">🧱 Revestimiento paredes</span><span class="sub-val" id="${id}_s_rpar">—</span></div>`;
+    html += `<div class="sub-row"><span class="sub-lbl">🏠 Techo PVC</span><span class="sub-val" id="${id}_s_pvc">—</span></div>`;
+  }
+  if (r.salpicadero) {
+    html += `<div class="sub-row"><span class="sub-lbl">🍳 Salpicadero cocina</span><span class="sub-val" id="${id}_s_sal">—</span></div>`;
+  }
+  html += `<div class="sub-row"><span class="sub-lbl">🔌 Electricidad</span><span class="sub-val" id="${id}_s_elec">—</span></div>`;
+  if (r.puertas > 0) {
+    html += `<div class="sub-row"><span class="sub-lbl">🚪 Carpintería (puertas)</span><span class="sub-val" id="${id}_s_puerta">—</span></div>`;
+  }
+  return html;
+}
+
+// ══════════════════════════════════════
+//  CALCULAR TODO
+// ══════════════════════════════════════
+function getP() {
+  return {
+    piso_mat: +document.getElementById('g_piso_mat').value||0,
+    piso_mo:  +document.getElementById('g_piso_mo').value||0,
+    pin_par:  +document.getElementById('g_pin_par').value||0,
+    pin_c:    +document.getElementById('g_pin_c').value||0,
+    resane:   +document.getElementById('g_resane').value||0,
+    zocalo:   +document.getElementById('g_zocalo').value||0,
+    elec:     +document.getElementById('g_elec').value||0,
+    puerta:   +document.getElementById('g_puerta').value||0,
+    rev_mat:  +document.getElementById('g_rev_mat').value||0,
+    rev_mo:   +document.getElementById('g_rev_mo').value||0,
+    pvc:      +document.getElementById('g_pvc').value||0,
+    imp:      +document.getElementById('g_imp').value||0,
+    sal:      +document.getElementById('g_sal').value||0,
+    imp_pct:  +document.getElementById('g_imp_pct').value||0
+  };
+}
+
+function fmt(n) { return '$' + Math.round(n).toLocaleString('es-CO'); }
+function s(id, v) { const el=document.getElementById(id); if(el) el.textContent=fmt(v); }
+function st(id, v) { const el=document.getElementById(id); if(el) el.textContent=v; }
+
+function calcRoom(id, r, p) {
+  let total = 0;
+  const piso_desp = r.humedo ? r.rev_piso*1.10 : r.piso*1.10;
+
+  if (!r.humedo) {
+    const t_piso_mat = piso_desp * p.piso_mat;
+    const t_piso_mo  = piso_desp * p.piso_mo;
+    const t_resane   = r.paredes * p.resane;
+    const t_pin_par  = r.paredes * p.pin_par;
+    const t_pin_c    = r.cielorraso * p.pin_c;
+    const t_zoc      = r.perimetro * p.zocalo;
+    const t_sal      = r.salpicadero ? r.salpicadero_m2 * p.sal : 0;
+    const t_elec     = r.puntos_elec * p.elec;
+    const t_puerta   = r.puertas * p.puerta;
+
+    s(id+'_t_piso_mat', t_piso_mat);
+    s(id+'_t_piso_mo',  t_piso_mo);
+    s(id+'_t_resane',   t_resane);
+    s(id+'_t_pin_par',  t_pin_par);
+    s(id+'_t_pin_c',    t_pin_c);
+    s(id+'_t_zoc',      t_zoc);
+    if(r.salpicadero) s(id+'_t_sal', t_sal);
+    s(id+'_t_elec',   t_elec);
+    if(r.puertas>0) s(id+'_t_puerta', t_puerta);
+
+    // Precios unit
+    st(id+'_u_piso_mat', fmt(p.piso_mat));
+    st(id+'_u_piso_mo',  fmt(p.piso_mo));
+    st(id+'_u_resane',   fmt(p.resane));
+    st(id+'_u_pin_par',  fmt(p.pin_par));
+    st(id+'_u_pin_c',    fmt(p.pin_c));
+    st(id+'_u_zoc',      fmt(p.zocalo));
+    if(r.salpicadero) st(id+'_u_sal', fmt(p.sal));
+    st(id+'_u_elec',   fmt(p.elec));
+    if(r.puertas>0) st(id+'_u_puerta', fmt(p.puerta));
+
+    const sub_piso = t_piso_mat + t_piso_mo;
+    const sub_pin  = t_resane + t_pin_par + t_pin_c;
+    s(id+'_s_piso', sub_piso);
+    s(id+'_s_pin',  sub_pin);
+    s(id+'_s_zoc',  t_zoc);
+    if(r.salpicadero) s(id+'_s_sal', t_sal);
+    s(id+'_s_elec',   t_elec);
+    if(r.puertas>0) s(id+'_s_puerta', t_puerta);
+
+    total = sub_piso + sub_pin + t_zoc + t_sal + t_elec + t_puerta;
+  } else {
+    const t_rev_mat  = (r.rev_piso*1.10) * p.rev_mat;
+    const t_rev_mo   = (r.rev_piso*1.10) * p.rev_mo;
+    const t_imp      = r.imp_m2 * p.imp;
+    const t_rpar_mat = (r.rev_par*1.10) * p.rev_mat;
+    const t_rpar_mo  = (r.rev_par*1.10) * p.rev_mo;
+    const t_pvc      = r.cielorraso * p.pvc;
+    const t_elec     = r.puntos_elec * p.elec;
+    const t_puerta   = r.puertas * p.puerta;
+
+    s(id+'_t_rev_mat',  t_rev_mat);
+    s(id+'_t_rev_mo',   t_rev_mo);
+    s(id+'_t_imp',      t_imp);
+    s(id+'_t_rpar_mat', t_rpar_mat);
+    s(id+'_t_rpar_mo',  t_rpar_mo);
+    s(id+'_t_pvc',      t_pvc);
+    s(id+'_t_elec',     t_elec);
+    if(r.puertas>0) s(id+'_t_puerta', t_puerta);
+
+    st(id+'_u_rev_mat',  fmt(p.rev_mat));
+    st(id+'_u_rev_mo',   fmt(p.rev_mo));
+    st(id+'_u_imp',      fmt(p.imp));
+    st(id+'_u_rpar_mat', fmt(p.rev_mat));
+    st(id+'_u_rpar_mo',  fmt(p.rev_mo));
+    st(id+'_u_pvc',      fmt(p.pvc));
+    st(id+'_u_elec',     fmt(p.elec));
+    if(r.puertas>0) st(id+'_u_puerta', fmt(p.puerta));
+
+    const sub_piso  = t_rev_mat + t_rev_mo;
+    const sub_rpar  = t_rpar_mat + t_rpar_mo;
+    s(id+'_s_piso',  sub_piso);
+    s(id+'_s_imp',   t_imp);
+    s(id+'_s_rpar',  sub_rpar);
+    s(id+'_s_pvc',   t_pvc);
+    s(id+'_s_elec',  t_elec);
+    if(r.puertas>0) s(id+'_s_puerta', t_puerta);
+
+    total = sub_piso + t_imp + sub_rpar + t_pvc + t_elec + t_puerta;
+  }
+
+  s(id+'_gran_sub', total);
+  s(id+'_total_header', total);
+  return total;
+}
+
+function calcularTodo() {
+  const p = getP();
+  const totals = {};
+  let gran_total_sin_imp = 0;
+
+  Object.entries(ROOMS).forEach(([id, r]) => {
+    totals[id] = calcRoom(id, r, p);
+    gran_total_sin_imp += totals[id];
+  });
+
+  const imprevistos   = gran_total_sin_imp * (p.imp_pct/100);
+  const gran_total    = gran_total_sin_imp + imprevistos;
+
+  // RESUMEN TAB
+  const colors = {P:'var(--accent)',R:'var(--green)',A:'var(--red)',SALA:'var(--purple)',BANO:'var(--blue)',LAV:'var(--purple)',COCINA:'var(--gold)',PASILLO:'var(--muted)'};
+  let rf_html = '';
+  Object.entries(ROOMS).forEach(([id, r]) => {
+    rf_html += `<div class="rf-row">
+      <span class="rf-lbl">${r.emoji} ${r.nombre}</span>
+      <div style="text-align:right">
+        <div class="rf-val">${fmt(totals[id])}</div>
+        <div class="rf-sub" style="color:${colors[id]}">${r.ancho}×${r.prof}m · ${(r.ancho*r.prof).toFixed(2)}m²</div>
+      </div>
+    </div>`;
+  });
+  rf_html += `<div class="rf-row"><span class="rf-lbl" style="color:var(--gold)">⚠️ Imprevistos (${p.imp_pct}%)</span><span class="rf-val" style="color:var(--gold)">${fmt(imprevistos)}</span></div>`;
+  document.getElementById('rf_rows').innerHTML = rf_html;
+  document.getElementById('rf_gran_total').textContent = fmt(gran_total);
+
+  // HEADER GENERAL
+  const hel = document.getElementById('total_general_header');
+  if(hel) hel.textContent = fmt(gran_total);
+
+  // BARRAS
+  let bars_html = '';
+  const barColors = {P:'var(--accent)',R:'var(--green)',A:'var(--red)',SALA:'var(--purple)',BANO:'var(--blue)',LAV:'#a07ec8',COCINA:'var(--gold)',PASILLO:'var(--muted)'};
+  Object.entries(ROOMS).forEach(([id, r]) => {
+    const pct = gran_total > 0 ? Math.round(totals[id]/gran_total*100) : 0;
+    bars_html += `<div class="prog-item">
+      <div class="prog-top"><span class="prog-lbl">${r.emoji} ${r.nombre}</span><span class="prog-val">${fmt(totals[id])} (${pct}%)</span></div>
+      <div class="prog-bg"><div class="prog-bar" style="width:${pct}%;background:${barColors[id]}"></div></div>
+    </div>`;
+  });
+  setTimeout(() => { document.getElementById('prog_total').innerHTML = bars_html; }, 50);
+}
+
+// ══════════════════════════════════════
+//  TABS
+// ══════════════════════════════════════
+function showTab(id, el) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  el.classList.add('active');
+}
+
+function togglePrecios(el) {
+  const body = document.getElementById('precioBody');
+  body.classList.toggle('open');
+  el.querySelector('span').textContent = body.classList.contains('open') ? '▲' : '▼';
+}
+
+// ══════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════
+window.addEventListener('load', () => {
+  Object.entries(ROOMS).forEach(([id, r]) => renderRoomTab(id, r));
+  calcularTodo();
+});
+</script>
+</body>
+</html>
