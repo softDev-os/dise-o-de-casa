@@ -1,82 +1,106 @@
-import { useState } from "react";
-import { InputField } from "../ui";
+import { useState } from 'react';
 
 interface PriceField {
-	key: string;
-	label: string;
-	hint?: string;
-	prefix?: string;
-	suffix?: string;
+  key: string;
+  label: string;
+  hint?: string;
+  prefix?: string;
+  suffix?: string;
 }
 
 interface PricePanelProps {
-	title: string;
-	description?: string;
-	fields: PriceField[];
-	values: Record<string, number>;
-	onChange: (key: string, value: number) => void;
-	onRecalculate: () => void;
-	collapsed?: boolean;
+  title: string;
+  description?: string;
+  fields: PriceField[];
+  values: Record<string, number>;
+  onChange: (key: string, value: number) => void;
+  onRecalculate: () => void;
+  collapsed?: boolean;
 }
 
 export function PricePanel({
-	title,
-	description,
-	fields,
-	values,
-	onChange,
-	onRecalculate,
-	collapsed: initialCollapsed = true,
+  title,
+  description,
+  fields,
+  values,
+  onChange,
+  onRecalculate,
+  collapsed: initialCollapsed = true,
 }: PricePanelProps) {
-	const [collapsed, setCollapsed] = useState(initialCollapsed);
+  const [collapsed, setCollapsed] = useState(initialCollapsed);
 
-	return (
-		<div className="bg-card border border-border rounded-2xl mb-6 overflow-hidden">
-			{/* Header - always visible */}
-			<button
-				onClick={() => setCollapsed(!collapsed)}
-				className="w-full flex items-center justify-between p-4 text-left cursor-pointer hover:bg-white/2 transition-colors"
-			>
-				<span className="text-sm text-muted">
-					⚙️ &nbsp;{title}
-					{description && (
-						<span className="text-[10px] text-muted ml-2">— {description}</span>
-					)}
-				</span>
-				<span className="text-muted text-xs transition-transform duration-300">
-					{collapsed ? "▼" : "▲"}
-				</span>
-			</button>
+  return (
+    <div className="bg-card-2 border-b border-border">
+      {/* Toggle button - matching original */}
+      <button
+        onClick={() => setCollapsed(!collapsed)}
+        className="w-full flex items-center gap-2.5 px-[18px] py-3 text-left cursor-pointer select-none transition-colors duration-200 hover:text-accent"
+      >
+        <span className="text-[11px] tracking-[1.5px] uppercase text-muted font-semibold">
+          ⚙️ &nbsp;{title}
+          {description && <span className="ml-1">— {description}</span>}
+        </span>
+        <span className="ml-auto text-sm transition-transform duration-300">
+          {collapsed ? '▼' : '▲'}
+        </span>
+      </button>
 
-			{/* Body - collapsible */}
-			<div
-				className={`
+      {/* Body - collapsible with animation */}
+      <div
+        className={`
           overflow-hidden transition-all duration-300 ease-in-out
-          ${collapsed ? "max-h-0 opacity-0" : "max-h-[2000px] opacity-100"}
+          ${collapsed ? 'max-h-0 opacity-0' : 'max-h-[2000px] opacity-100'}
         `}
-			>
-				<div className="p-4 pt-0">
-					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
-						{fields.map((field) => (
-							<InputField
-								key={field.key}
-								label={field.label}
-								value={values[field.key] || 0}
-								onChange={(value) => onChange(field.key, value)}
-								prefix={field.prefix}
-								suffix={field.suffix}
-								hint={field.hint}
-							/>
-						))}
-					</div>
-					<button
-						onClick={onRecalculate}
-						className="mt-4 w-full bg-accent text-bg border-none rounded-lg py-3 font-display text-xl tracking-[2px] cursor-pointer transition-all duration-200 hover:bg-accent-2 hover:-translate-y-0.5"
-					>
-						⚡ RECALCULAR TODO
-					</button>
-				</div>
-			</div>
-		</div>
-	);
+      >
+        <div className="px-[18px] pb-5 pt-0 border-t border-border">
+          {/* Inputs grid - matching original */}
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(155px,1fr))] gap-[9px]">
+            {fields.map((field) => (
+              <div key={field.key} className="flex flex-col gap-1">
+                <label className="text-[9px] tracking-[1.5px] uppercase text-muted font-semibold">
+                  {field.label}
+                </label>
+                <div className="relative">
+                  {field.prefix && (
+                    <span className="absolute left-[11px] top-1/2 -translate-y-1/2 text-muted text-xs">
+                      {field.prefix}
+                    </span>
+                  )}
+                  <input
+                    type="number"
+                    value={values[field.key] || 0}
+                    onChange={(e) => onChange(field.key, Number(e.target.value))}
+                    className={`
+                      w-full bg-white/[0.04] border border-border rounded-[7px]
+                      px-[11px] py-2 text-light text-xs font-medium
+                      outline-none transition-colors duration-200
+                      focus:border-accent
+                      ${field.prefix ? 'pl-7' : ''}
+                      ${field.suffix ? 'pr-7' : ''}
+                    `}
+                  />
+                  {field.suffix && (
+                    <span className="absolute right-[11px] top-1/2 -translate-y-1/2 text-muted text-xs">
+                      {field.suffix}
+                    </span>
+                  )}
+                </div>
+                {field.hint && (
+                  <div className="text-[9px] text-muted">{field.hint}</div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Recalculate button - matching original */}
+          <button
+            onClick={onRecalculate}
+            className="mt-[14px] w-full bg-accent text-bg border-none rounded-[7px] py-[11px] font-display text-lg tracking-[2px] cursor-pointer transition-all duration-200 hover:bg-accent-2 hover:-translate-y-[1px]"
+          >
+            ⚡ RECALCULAR TODO EL APARTAMENTO
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 }
