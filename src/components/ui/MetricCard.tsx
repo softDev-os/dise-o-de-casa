@@ -30,7 +30,7 @@ export function MetricCard({
 		<div
 			className={`
         bg-card border border-border rounded-xl p-4 relative overflow-hidden
-        border-t-3 ${variantStyles[variant]}
+        border-t-[3px] ${variantStyles[variant]}
         transition-all duration-200 hover:border-accent/30 hover:-translate-y-0.5
       `}
 		>

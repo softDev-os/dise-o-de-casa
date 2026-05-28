@@ -18,7 +18,7 @@ export function Skeleton({ className = "", width, height }: SkeletonProps) {
 
 export function MetricCardSkeleton() {
 	return (
-		<div className="bg-card border border-border rounded-xl p-4 border-t-3 border-t-border">
+		<div className="bg-card border border-border rounded-xl p-4 border-t-[3px] border-t-border">
 			<Skeleton width={24} height={24} className="mb-2" />
 			<Skeleton width={60} height={10} className="mb-2" />
 			<Skeleton width={80} height={28} className="mb-1" />
@@ -55,7 +55,7 @@ export function MaterialTableSkeleton() {
 
 export function RoomCardSkeleton() {
 	return (
-		<div className="bg-card border border-border rounded-[14px] p-4 border-t-3 border-t-border">
+		<div className="bg-card border border-border rounded-[14px] p-4 border-t-[3px] border-t-border">
 			<div className="flex items-center gap-2.5 mb-3">
 				<Skeleton width={28} height={28} />
 				<div>

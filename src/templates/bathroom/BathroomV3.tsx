@@ -115,7 +115,7 @@ export function BathroomV3() {
 
 							{/* Metrics */}
 							<div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-								<div className="bg-card border border-border rounded-xl p-4 border-t-3 border-t-accent">
+								<div className="bg-card border border-border rounded-xl p-4 border-t-[3px] border-t-accent">
 									<div className="text-xl mb-1">🪨</div>
 									<div className="text-[9px] tracking-[2px] uppercase text-muted mb-1">
 										Piso
@@ -125,7 +125,7 @@ export function BathroomV3() {
 									</div>
 									<div className="text-[10px] text-muted">6 × 2.20 m</div>
 								</div>
-								<div className="bg-card border border-border rounded-xl p-4 border-t-3 border-t-gold">
+								<div className="bg-card border border-border rounded-xl p-4 border-t-[3px] border-t-gold">
 									<div className="text-xl mb-1">🧱</div>
 									<div className="text-[9px] tracking-[2px] uppercase text-muted mb-1">
 										Paredes
@@ -137,7 +137,7 @@ export function BathroomV3() {
 										Perímetro × 2.40m
 									</div>
 								</div>
-								<div className="bg-card border border-border rounded-xl p-4 border-t-3 border-t-green">
+								<div className="bg-card border border-border rounded-xl p-4 border-t-[3px] border-t-green">
 									<div className="text-xl mb-1">🏠</div>
 									<div className="text-[9px] tracking-[2px] uppercase text-muted mb-1">
 										Techo PVC
@@ -147,7 +147,7 @@ export function BathroomV3() {
 									</div>
 									<div className="text-[10px] text-muted">Igual al piso</div>
 								</div>
-								<div className="bg-card border border-border rounded-xl p-4 border-t-3 border-t-blue">
+								<div className="bg-card border border-border rounded-xl p-4 border-t-[3px] border-t-blue">
 									<div className="text-xl mb-1">🔲</div>
 									<div className="text-[9px] tracking-[2px] uppercase text-muted mb-1">
 										Baldosas

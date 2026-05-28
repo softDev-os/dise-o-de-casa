@@ -2,22 +2,27 @@
 @import "tailwindcss";
 @import "./styles/animations.css";
 
-/* CSS Custom Properties */
-:root {
-	--bg: #0c0f0e;
-	--card: #141918;
-	--card-2: #101413;
-	--accent: #6ec8a9;
-	--accent-2: #8ee8c8;
-	--light: #e0f0eb;
-	--muted: #607a72;
-	--green: #6eb88a;
-	--blue: #7a9ec8;
-	--gold: #c8b46e;
-	--red: #d9735a;
-	--purple: #a07ec8;
-	--orange: #c8956e;
-	--border: #1e2a25;
+/* Tailwind v4 Theme Configuration */
+@theme {
+	/* Colors */
+	--color-bg: #0c0f0e;
+	--color-card: #141918;
+	--color-card-2: #101413;
+	--color-accent: #6ec8a9;
+	--color-accent-2: #8ee8c8;
+	--color-light: #e0f0eb;
+	--color-muted: #607a72;
+	--color-green: #6eb88a;
+	--color-blue: #7a9ec8;
+	--color-gold: #c8b46e;
+	--color-red: #d9735a;
+	--color-purple: #a07ec8;
+	--color-orange: #c8956e;
+	--color-border: #1e2a25;
+
+	/* Fonts */
+	--font-display: "Bebas Neue", sans-serif;
+	--font-body: "DM Sans", sans-serif;
 }
 
 /* Base styles */
@@ -28,9 +33,9 @@
 }
 
 body {
-	background: var(--bg);
-	color: var(--light);
-	font-family: "DM Sans", sans-serif;
+	background: var(--color-bg);
+	color: var(--color-light);
+	font-family: var(--font-body);
 	min-height: 100vh;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
@@ -43,35 +48,35 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-	background: var(--card);
+	background: var(--color-card);
 }
 
 ::-webkit-scrollbar-thumb {
-	background: var(--border);
+	background: var(--color-border);
 	border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-	background: var(--muted);
+	background: var(--color-muted);
 }
 
 /* Selection */
 ::selection {
 	background: rgba(110, 200, 169, 0.3);
-	color: var(--light);
+	color: var(--color-light);
 }
 
 /* Focus styles */
 :focus-visible {
-	outline: 2px solid var(--accent);
+	outline: 2px solid var(--color-accent);
 	outline-offset: 2px;
 }
 
 /* Utility classes */
 .font-display {
-	font-family: "Bebas Neue", sans-serif;
+	font-family: var(--font-display);
 }
 
 .font-body {
-	font-family: "DM Sans", sans-serif;
+	font-family: var(--font-body);
 }
